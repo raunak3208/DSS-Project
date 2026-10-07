@@ -1,0 +1,4 @@
+aiokafka==0.11.*
+redis==5.*
+numpy>=1.26
+scikit-learn>=1.4

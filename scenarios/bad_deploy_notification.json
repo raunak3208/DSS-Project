@@ -1,0 +1,17 @@
+{
+  "name": "bad_deploy_notification",
+  "description": "A bad release (v2) of notification-service throws errors. Rollback is high risk, so it always needs human approval. A restart would not help because the bad version is the desired state.",
+  "inject": {
+    "service": "notification-service",
+    "type": "bad_deploy"
+  },
+  "expect": {
+    "root_cause": "notification-service",
+    "fault_type": "bad_deploy",
+    "actions": [
+      "rollback_deployment"
+    ],
+    "human_approval": true,
+    "final": "resolved"
+  }
+}

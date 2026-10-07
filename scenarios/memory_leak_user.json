@@ -1,0 +1,17 @@
+{
+  "name": "memory_leak_user",
+  "description": "Memory leak in user-service (3 MB/s). The forecaster predicts exhaustion; the agent restarts the pod automatically before the heap limit is hit.",
+  "inject": {
+    "service": "user-service",
+    "type": "memory"
+  },
+  "expect": {
+    "root_cause": "user-service",
+    "fault_type": "memory_leak",
+    "actions": [
+      "restart_pod"
+    ],
+    "human_approval": false,
+    "final": "resolved"
+  }
+}

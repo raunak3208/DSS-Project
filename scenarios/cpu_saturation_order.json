@@ -1,0 +1,18 @@
+{
+  "name": "cpu_saturation_order",
+  "description": "CPU saturation on order-service. Agent scales out (low risk, auto). Scaling only halves the load, so verification fails; the agent investigates again and restarts the pod instead of repeating the scale.",
+  "inject": {
+    "service": "order-service",
+    "type": "cpu"
+  },
+  "expect": {
+    "root_cause": "order-service",
+    "fault_type": "cpu_saturation",
+    "actions": [
+      "scale_deployment",
+      "restart_pod"
+    ],
+    "human_approval": false,
+    "final": "resolved"
+  }
+}

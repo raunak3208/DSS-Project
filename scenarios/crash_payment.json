@@ -1,0 +1,17 @@
+{
+  "name": "crash_payment",
+  "description": "payment-service crashes. Callers fail, heartbeat detector fires, RCA blames the dead callee. Restarting a critical service needs human approval.",
+  "inject": {
+    "service": "payment-service",
+    "type": "crash"
+  },
+  "expect": {
+    "root_cause": "payment-service",
+    "fault_type": "crash",
+    "actions": [
+      "restart_service"
+    ],
+    "human_approval": true,
+    "final": "resolved"
+  }
+}

@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: dashboard, namespace: aiops, labels: {app: dashboard}}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: dashboard}}
+  template:
+    metadata: {labels: {app: dashboard}}
+    spec:
+      containers:
+        - name: dashboard
+          image: aiops/dashboard:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 80}]
+          env:
+
+          resources: {limits: {memory: 384Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: dashboard, namespace: aiops}
+spec:
+  selector: {app: dashboard}
+  type: NodePort
+  ports: [{port: 80, targetPort: 80, nodePort: 30080}]

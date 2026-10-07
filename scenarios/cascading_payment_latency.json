@@ -1,0 +1,18 @@
+{
+  "name": "cascading_payment_latency",
+  "description": "Latency spike in payment-service cascades to order-service and gateway. Graph RCA blames payment-service; three services are affected so the incident is critical and a human must approve before anything runs.",
+  "inject": {
+    "service": "payment-service",
+    "type": "latency",
+    "intensity": 1500
+  },
+  "expect": {
+    "root_cause": "payment-service",
+    "fault_type": "latency_spike",
+    "actions": [
+      "restart_pod"
+    ],
+    "human_approval": true,
+    "final": "resolved"
+  }
+}
