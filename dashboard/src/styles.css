@@ -564,3 +564,767 @@ td.worse { color: var(--bad); font-weight: 600; } td.better { color: var(--ok); 
   color: #64748b;
 }
 
+/* ==========================================================================
+   ACADEMIC / EXECUTIVE PRESENTATION STYLES FOR INCIDENT PANEL
+   ========================================================================== */
+.incident-panel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.incident-header-banner {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.incident-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.incident-title-row h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.incident-subtitle {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.incident-card {
+  background: #fbfcfd;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.card-step-badge {
+  background: var(--agent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.card-subtext {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+/* RCA Callout & Impact Flow */
+.rca-main-callout {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--bad);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.rca-target-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rca-target-icon {
+  font-size: 22px;
+}
+
+.rca-service-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.rca-fault-type {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.impact-chain-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.chain-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.chain-nodes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chain-node-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chain-pill {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.chain-pill.culprit-pill {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.2);
+}
+
+.chain-pill.victim-pill {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.chain-arrow {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.ranking-label {
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.explain-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.explain-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.explain-body {
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+/* Recommended Action Card */
+.action-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-item.full-width {
+  grid-column: 1 / -1;
+  padding-top: 6px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.action-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.action-val {
+  font-size: 13.5px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.action-val.primary-val {
+  color: var(--agent);
+  font-size: 14.5px;
+}
+
+/* Safety Gate Checklist Grid */
+.gate-checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .gate-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gate-check-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gate-check-item.passed {
+  border-left: 3px solid var(--ok);
+}
+
+.gate-check-item.flagged {
+  border-left: 3px solid var(--warn);
+  background: #fffbeb;
+}
+
+.gate-check-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gate-check-status-icon {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gate-check-status-icon.icon-pass {
+  color: var(--ok);
+}
+
+.gate-check-status-icon.icon-warn {
+  color: var(--warn);
+}
+
+.gate-check-title {
+  font-weight: 650;
+  color: var(--ink);
+  flex: 1;
+}
+
+.gate-check-status-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.badge-passed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-flagged {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.gate-check-desc {
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.35;
+}
+
+/* Human Approval Card */
+.human-approval-card {
+  border: 2px solid var(--human);
+  background: #f0fdfa;
+  box-shadow: 0 4px 15px rgba(14, 116, 144, 0.12);
+}
+
+.approval-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.approval-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.approval-header-row h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f766e;
+}
+
+.approval-subtext {
+  font-size: 12.5px;
+  color: #115e59;
+  margin: 2px 0 0;
+}
+
+.approval-remediation-summary {
+  background: #ffffff;
+  border: 1px solid #ccfbf1;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #134e4a;
+  display: grid;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.approval-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #99f6e4;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.approval-btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.primary-action-btn {
+  background: #0d9488 !important;
+  color: #fff !important;
+  font-weight: 650;
+  border-color: #0d9488 !important;
+  padding: 8px 16px !important;
+}
+
+.primary-action-btn:hover {
+  background: #0f766e !important;
+}
+
+.secondary-action-btn {
+  background: #fff !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+  font-weight: 650;
+  padding: 8px 16px !important;
+}
+
+/* Executive Summary Callout for Professor presentation */
+.incident-header-banner {
+  margin-bottom: 14px;
+}
+
+.incident-num-badge {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  background: #1e293b;
+  color: #f8fafc;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.executive-summary-callout {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid var(--agent);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.exec-title {
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--agent);
+  margin-bottom: 6px;
+}
+
+.exec-body {
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+.exec-body strong {
+  color: #0f172a;
+}
+
+/* Failure Chain Footnote */
+.chain-explanation-footnote {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.4;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+/* Active Progress and Verification Cards */
+.active-progress-card {
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  padding: 12px 14px;
+}
+
+.active-progress-card.verifying {
+  border-color: #fde047;
+  background: #fefce8;
+}
+
+.progress-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resolved-success-card {
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  padding: 12px 14px;
+}
+
+/* Safety Gate Intro and Alert */
+.safety-gate-intro {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.safety-gate-alert {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fffbeb;
+  border: 1px solid #fef08a;
+  color: #92400e;
+  font-size: 12px;
+}
+
+.gate-check-cat {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.action-highlight {
+  color: #0f766e;
+  font-weight: 650;
+}
+
+/* Full page panel and cards */
+.full-page-panel {
+  width: 100%;
+}
+
+.full-width-card {
+  width: 100%;
+}
+
+/* Compact Safety Gate Checklist Grid across full width */
+.gate-checklist-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.gate-check-compact-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gate-check-compact-item.passed {
+  border-left: 3px solid var(--ok);
+}
+
+.gate-check-compact-item.flagged {
+  border-left: 3px solid var(--warn);
+  background: #fffbeb;
+}
+
+.gate-compact-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gate-compact-title {
+  font-weight: 650;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.gate-compact-desc {
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   WIDESCREEN MICROSERVICES TOPOLOGY GRAPH & SUMMARY STRIP
+   ========================================================================== */
+.topology-panel {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.topology-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.topology-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.topology-title-row h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.topology-subtext {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.topology-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 8px;
+  background: #f1f5f9;
+  border-radius: 5px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 550;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.ok { background: #10b981; }
+.legend-dot.warn { background: #f59e0b; }
+.legend-dot.bad { background: #ef4444; }
+
+.topology-canvas-wrap {
+  width: 100%;
+  background: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.topology-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 300px;
+}
+
+/* Animated edge line and halo for active root cause */
+@keyframes edge-flow {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+.pulse-edge {
+  animation: edge-flow 1.2s linear infinite;
+}
+
+@keyframes halo-pulse {
+  0%, 100% { opacity: 0.8; stroke-width: 2px; }
+  50% { opacity: 0.2; stroke-width: 5px; }
+}
+
+.pulse-halo {
+  animation: halo-pulse 2s ease-in-out infinite;
+}
+
+/* Service Summary Metric Cards Strip */
+.topology-cards-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.topology-summary-card {
+  text-align: left;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #94a3b8;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.topology-summary-card:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.topology-summary-card.healthy {
+  border-left-color: #10b981;
+}
+
+.topology-summary-card.degraded {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.topology-summary-card.down {
+  border-left-color: #ef4444;
+  background: #fef2f2;
+}
+
+.topology-summary-card.active-sel {
+  box-shadow: 0 0 0 2px #0f172a;
+  border-color: #0f172a;
+}
+
+.summary-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-service-name {
+  font-weight: 700;
+  font-size: 12px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-status-pill {
+  font-size: 9px;
+  font-weight: 750;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: var(--mono);
+}
+
+.summary-status-pill.healthy {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.summary-status-pill.degraded {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.summary-status-pill.down {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.summary-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px 4px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #64748b;
+  padding-top: 5px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.summary-metrics-grid span {
+  display: block;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.summary-metrics-grid b {
+  color: #0f172a;
+  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+

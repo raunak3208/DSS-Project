@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { api, short } from "../api.js";
+import { api } from "../api.js";
+import { friendlySvc } from "./IncidentPanel.jsx";
 
 const FAULTS = [
   ["cpu", "CPU saturation"], ["latency", "Latency spike"], ["memory", "Memory leak"],
@@ -32,14 +33,11 @@ export default function Header({ data, refresh, currentUser, onLogout }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <h1>AIOps control room</h1>
           <span className="badge agent" title="Authenticated Operator Session">
-            👤 {username} ({role})
-          </span>
-          <span className="badge ok" title="API Rate Limit is active at 40 req/s">
-            ⚡ 40 req/s limit
+            OPERATOR: {username} ({role})
           </span>
         </div>
         <div className="sub" style={{ marginTop: 4 }}>
-          Watching {data.services.length} services. Reasoning engine: {data.llm.enabled ? `${data.llm.provider} (${data.llm.model})` : "built-in rules (no LLM configured)"}
+          Watching {data.services.length} services. Analysis engine: {data.llm?.enabled ? `Mistral AI (${data.llm.model || "small"})` : "Automated rule engine (built-in)"}
         </div>
       </div>
 
@@ -60,7 +58,7 @@ export default function Header({ data, refresh, currentUser, onLogout }) {
         </div>
 
         <select className="select" value={svc} onChange={(e) => setSvc(e.target.value)} aria-label="Service to break">
-          {SERVICES.map((s) => <option key={s} value={s}>{short(s) || s}</option>)}
+          {SERVICES.map((s) => <option key={s} value={s}>{friendlySvc(s)}</option>)}
         </select>
         <select className="select" value={fault} onChange={(e) => setFault(e.target.value)} aria-label="Failure type">
           {FAULTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}

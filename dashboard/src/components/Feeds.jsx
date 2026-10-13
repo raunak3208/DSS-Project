@@ -23,6 +23,77 @@ export function Timeline({ events }) {
   );
 }
 
+export function humanizeAnomaly(detail, type) {
+  if (!detail) return "";
+
+  // Latency: "p95_ms 326.2 vs baseline 156.8 (z=6.8)"
+  const latMatch = detail.match(/p95_ms\s+([\d.]+)\s+vs\s+baseline\s+([\d.]+)/i);
+  if (latMatch) {
+    const cur = parseFloat(latMatch[1]);
+    const base = parseFloat(latMatch[2]);
+    const ratio = base > 0 ? (cur / base).toFixed(1) : "2.0";
+    return `Response time spiked to ${Math.round(cur)} ms (normally ~${Math.round(base)} ms, ${ratio}x slower)`;
+  }
+
+  // Error rate: "err_rate 0.2 vs baseline 0.0 (z=10.7)"
+  const errMatch = detail.match(/err_rate\s+([\d.]+)\s+vs\s+baseline\s+([\d.]+)/i);
+  if (errMatch) {
+    const curPct = Math.round(parseFloat(errMatch[1]) * 100);
+    const basePct = Math.round(parseFloat(errMatch[2]) * 100);
+    return `Error spike: ${curPct}% of requests failing (normally ${basePct}%)`;
+  }
+
+  // CPU: "cpu_pct 90.5 vs baseline 12.0"
+  const cpuMatch = detail.match(/cpu_pct\s+([\d.]+)\s+vs\s+baseline\s+([\d.]+)/i);
+  if (cpuMatch) {
+    const cur = Math.round(parseFloat(cpuMatch[1]));
+    const base = Math.round(parseFloat(cpuMatch[2]));
+    return `High CPU load: ${cur}% utilization (normally ~${base}%)`;
+  }
+
+  // Memory: "mem_mb 240 vs baseline 80"
+  const memMatch = detail.match(/mem_mb\s+([\d.]+)\s+vs\s+baseline\s+([\d.]+)/i);
+  if (memMatch) {
+    const cur = Math.round(parseFloat(memMatch[1]));
+    const base = Math.round(parseFloat(memMatch[2]));
+    return `Memory surge: ${cur} MB allocated (normally ~${base} MB)`;
+  }
+
+  // Log error templates: "error template repeating: POST /api/checkout failed status=<*>..."
+  if (detail.includes("error template repeating:") || detail.includes("POST /api/")) {
+    let clean = detail
+      .replace("error template repeating:", "")
+      .replace(/<[*]>/g, "")
+      .replace(/status=\s*/g, "")
+      .replace(/failed\s+reason=/g, "due to ")
+      .replace(/\s+/g, " ")
+      .trim();
+    return `Recurring error pattern: ${clean}`;
+  }
+
+  // Unreachable / Heartbeat
+  if (detail.includes("no telemetry")) {
+    const secMatch = detail.match(/for\s+(\d+)s/);
+    const secs = secMatch ? `${secMatch[1]}s` : "recently";
+    return `Service stopped responding (no heartbeat for ${secs})`;
+  }
+
+  // Multivariate
+  if (detail.includes("unusual combination")) {
+    return "Multi-metric irregularity detected across response time, CPU and memory";
+  }
+
+  // Fallback: clean up math notation like (z=6.8)
+  return detail.replace(/\(z=[\d.]+\)/g, "").trim();
+}
+
+const DETECTOR_NAMES = {
+  ewma_control_chart: "Baseline Check",
+  drain_log_parser: "Log Pattern",
+  isolation_forest: "Multi-Metric",
+  heartbeat: "Availability Check",
+};
+
 export function Anomalies({ anomalies }) {
   return (
     <div className="panel">
@@ -32,8 +103,18 @@ export function Anomalies({ anomalies }) {
         {anomalies.map((a) => (
           <div key={a.id} className="ev" style={{ gridTemplateColumns: "62px 120px 1fr" }}>
             <span className="mono">{fmtTime(a.ts)}</span>
-            <span><b>{short(a.service) || a.service}</b> <span className={`badge ${a.severity === "high" ? "bad" : a.severity === "medium" ? "warn" : ""}`}>{a.type}</span></span>
-            <span>{a.detail} <span className="muted">via {a.detector.replaceAll("_", " ")}</span></span>
+            <span>
+              <b>{short(a.service) || a.service}</b>{" "}
+              <span className={`badge ${a.severity === "high" ? "bad" : a.severity === "medium" ? "warn" : ""}`}>
+                {a.type}
+              </span>
+            </span>
+            <span>
+              {humanizeAnomaly(a.detail, a.type)}{" "}
+              <span className="muted" style={{ fontSize: 11 }}>
+                ({DETECTOR_NAMES[a.detector] || a.detector.replaceAll("_", " ")})
+              </span>
+            </span>
           </div>
         ))}
       </div>

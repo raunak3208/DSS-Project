@@ -132,13 +132,9 @@ export default function AuthPage({ onAuthenticated }) {
 
         {/* Security badges */}
         <div className="auth-security-badges">
-          <span className="auth-badge rps" title="Maximum 40 requests/second allowed">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Rate Limit: 40 req/s
-          </span>
           <span className={`auth-badge lockout ${isLocked ? "active-lock" : ""}`} title="5 failed attempts triggers 2-minute lockout">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            {isLocked ? `Locked (${formatTimer(lockSeconds)})` : "Lockout: 5 tries / 2 min"}
+            {isLocked ? `Locked (${formatTimer(lockSeconds)})` : "Security: 5 tries / 2 min lock"}
           </span>
         </div>
 
@@ -146,7 +142,6 @@ export default function AuthPage({ onAuthenticated }) {
         {isLocked && (
           <div className="auth-lockout-banner" role="alert">
             <div className="lockout-banner-top">
-              <div className="lockout-icon-pulse">🔒</div>
               <div className="lockout-text">
                 <strong>SECURITY LOCKOUT ACTIVE</strong>
                 <span>5 consecutive incorrect attempts detected. Access is temporarily locked.</span>
@@ -254,7 +249,7 @@ export default function AuthPage({ onAuthenticated }) {
             disabled={isLocked || loading}
           >
             {isLocked ? (
-              <>🔒 Locked ({formatTimer(lockSeconds)})</>
+              <>Locked ({formatTimer(lockSeconds)})</>
             ) : loading ? (
               <span className="spinner-wrap">
                 <span className="auth-spinner" />

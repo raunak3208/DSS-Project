@@ -114,14 +114,11 @@ export default function App() {
       />
       {error && <div className="banner bad">Lost connection to the controller ({error}). Showing the last data received.</div>}
       <LoopStrip incident={inc} />
-      <div className="grid-main">
-        <div className="panel">
-          <h2>Service health and dependencies</h2>
-          <ServiceGraph services={data.services} edges={data.edges} rootCause={live ? inc.root_cause : null} selected={selected} onSelect={setSelected} />
-          <ServiceCards services={data.services} selected={selected} onSelect={setSelected} />
-        </div>
-        <IncidentPanel incident={inc} learning={data.learning} />
+      <div className="panel topology-panel">
+        <ServiceGraph services={data.services} edges={data.edges} rootCause={live ? inc.root_cause : null} selected={selected} onSelect={setSelected} />
+        <ServiceCards services={data.services} selected={selected} onSelect={setSelected} />
       </div>
+      <IncidentPanel incident={inc} learning={data.learning} />
       <MetricCharts service={svc} />
       <div className="grid-3">
         <Timeline events={data.timeline} />

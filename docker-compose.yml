@@ -99,7 +99,10 @@ services:
     container_name: dashboard
     restart: unless-stopped
     ports: ["3000:80"]
+    volumes:
+      - ./dashboard/dist:/usr/share/nginx/html:ro
     depends_on: [controller]
+
 
   # ---------------- observability ----------------
   prometheus:
