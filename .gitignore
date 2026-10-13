@@ -1,0 +1,8 @@
+.DS_Store
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+dashboard/node_modules/
+dashboard/dist/
+dashboard/package-lock.json

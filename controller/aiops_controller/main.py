@@ -4,11 +4,12 @@ from contextlib import asynccontextmanager
 
 import httpx
 import redis.asyncio as aioredis
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from . import config, evidence
+from . import config, evidence, auth
 from .agent import build_agent
 from .executor import make_executor
 from .llm import LLM
@@ -51,6 +52,109 @@ app = FastAPI(title="AIOps Controller API", version="1.0", lifespan=lifespan,
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    client_ip = auth.get_client_ip(request)
+    allowed, remaining, retry_after = auth.check_rate_limit(client_ip)
+    if not allowed:
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Rate limit exceeded. Maximum 40 requests per second allowed.", "retry_after": retry_after},
+            headers={"Retry-After": str(retry_after), "X-RateLimit-Limit": str(auth.RATE_LIMIT_RPS), "X-RateLimit-Remaining": "0"},
+        )
+    response = await call_next(request)
+    response.headers["X-RateLimit-Limit"] = str(auth.RATE_LIMIT_RPS)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
+    return response
+
+
+@app.post("/api/auth/login", summary="Operator authentication with 5-attempt / 2-minute lockout protection")
+async def login(body: auth.LoginRequest, request: Request):
+    client_ip = auth.get_client_ip(request)
+    status_by_user = auth.get_lockout_status(body.username)
+    status_by_ip = auth.get_lockout_status(client_ip)
+
+    if status_by_user["locked"] or status_by_ip["locked"]:
+        remaining_s = max(status_by_user.get("remaining_seconds", 0), status_by_ip.get("remaining_seconds", 0))
+        return JSONResponse(
+            status_code=423,
+            content={
+                "detail": f"Account locked due to 5 consecutive failed login attempts. Please wait {remaining_s}s before trying again.",
+                "locked": True,
+                "remaining_seconds": remaining_s,
+                "failed_attempts": 5,
+                "remaining_attempts": 0,
+            },
+        )
+
+    user = auth.verify_credentials(body.username, body.password)
+    if not user:
+        res_user = auth.record_failed_login(body.username)
+        res_ip = auth.record_failed_login(client_ip)
+        is_locked = res_user["locked"] or res_ip["locked"]
+        if is_locked:
+            return JSONResponse(
+                status_code=423,
+                content={
+                    "detail": "Account locked for 2 minutes due to 5 consecutive failed login attempts.",
+                    "locked": True,
+                    "remaining_seconds": int(auth.LOCKOUT_DURATION_S),
+                    "failed_attempts": 5,
+                    "remaining_attempts": 0,
+                },
+            )
+        return JSONResponse(
+            status_code=401,
+            content={
+                "detail": f"Invalid ID or password. Attempt {res_user['failed_attempts']} of {auth.LOCKOUT_MAX_ATTEMPTS} before 2-minute lockout.",
+                "locked": False,
+                "remaining_seconds": 0,
+                "failed_attempts": res_user["failed_attempts"],
+                "remaining_attempts": res_user["remaining_attempts"],
+            },
+        )
+
+    # Success: reset lockout counters
+    auth.reset_lockout(body.username)
+    auth.reset_lockout(client_ip)
+    token = auth.create_session(user["username"], user["role"])
+    return {
+        "token": token,
+        "user": user,
+        "message": "Authentication successful",
+    }
+
+
+@app.get("/api/auth/me", summary="Check current session token validity")
+async def auth_me(request: Request):
+    auth_header = request.headers.get("authorization", "")
+    token = auth_header.replace("Bearer ", "").strip() if auth_header.startswith("Bearer ") else ""
+    session = auth.verify_session(token)
+    if not session:
+        raise HTTPException(status_code=401, detail="Session expired or invalid")
+    return {"authenticated": True, "user": session}
+
+
+@app.post("/api/auth/logout", summary="End session")
+async def logout(request: Request):
+    auth_header = request.headers.get("authorization", "")
+    token = auth_header.replace("Bearer ", "").strip() if auth_header.startswith("Bearer ") else ""
+    auth.revoke_session(token)
+    return {"ok": True}
+
+
+@app.get("/api/auth/status", summary="Current lockout and rate limit status")
+async def auth_status(request: Request, username: str = ""):
+    client_ip = auth.get_client_ip(request)
+    stat = auth.get_lockout_status(username) if username else auth.get_lockout_status(client_ip)
+    return {
+        "rate_limit_rps": auth.RATE_LIMIT_RPS,
+        "lockout_max_attempts": auth.LOCKOUT_MAX_ATTEMPTS,
+        "lockout_duration_s": auth.LOCKOUT_DURATION_S,
+        **stat,
+    }
+
+
 def _brief(i):
     return {k: i[k] for k in ("id", "created", "status", "severity", "root_cause", "services", "stage", "resolved_at")}
 
@@ -67,6 +171,8 @@ async def get_config():
             "policy": {"auto_max_risk": config.AUTO_MAX_RISK, "min_confidence": config.MIN_CONFIDENCE,
                        "cooldown_s": config.COOLDOWN_S, "max_replicas": config.MAX_REPLICAS,
                        "max_iterations": config.MAX_ITERATIONS, "approval_timeout_s": config.APPROVAL_TIMEOUT_S},
+            "auth": {"rate_limit_rps": auth.RATE_LIMIT_RPS, "lockout_max_attempts": auth.LOCKOUT_MAX_ATTEMPTS,
+                     "lockout_duration_s": auth.LOCKOUT_DURATION_S},
             "inventory": config.INVENTORY}
 
 
