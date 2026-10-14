@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { api, setAuthToken, ApiError } from "../api.js";
 
 export default function AuthPage({ onAuthenticated }) {
-  const [username, setUsername] = useState("admin");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -15,20 +15,22 @@ export default function AuthPage({ onAuthenticated }) {
   // Check initial lockout status on mount
   useEffect(() => {
     let active = true;
-    api.authStatus(username).then((st) => {
-      if (!active) return;
-      if (st.locked) {
-        setIsLocked(true);
-        setLockSeconds(st.remaining_seconds || 120);
-        setFailedAttempts(5);
-        setRemainingAttempts(0);
-      } else {
-        setFailedAttempts(st.failed_attempts || 0);
-        setRemainingAttempts(st.remaining_attempts ?? 5);
-      }
-    }).catch(() => {});
+    if (username) {
+      api.authStatus(username).then((st) => {
+        if (!active) return;
+        if (st.locked) {
+          setIsLocked(true);
+          setLockSeconds(st.remaining_seconds || 120);
+          setFailedAttempts(5);
+          setRemainingAttempts(0);
+        } else {
+          setFailedAttempts(st.failed_attempts || 0);
+          setRemainingAttempts(st.remaining_attempts ?? 5);
+        }
+      }).catch(() => {});
+    }
     return () => { active = false; };
-  }, []);
+  }, [username]);
 
   // Countdown timer when locked
   useEffect(() => {
@@ -96,12 +98,6 @@ export default function AuthPage({ onAuthenticated }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillCredentials = (u, p) => {
-    setUsername(u);
-    setPassword(p);
-    setErrorMsg("");
   };
 
   const formatTimer = (seconds) => {
@@ -202,7 +198,7 @@ export default function AuthPage({ onAuthenticated }) {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Operator username (e.g. admin)"
+                placeholder="Enter operator username"
                 disabled={isLocked || loading}
                 autoComplete="username"
                 required
@@ -256,35 +252,10 @@ export default function AuthPage({ onAuthenticated }) {
                 Authenticating...
               </span>
             ) : (
-              <>Sign In to Control Center &rarr;</>
+              <>Sign In to Operations Console &rarr;</>
             )}
           </button>
         </form>
-
-        {/* Quick Credentials Helper */}
-        <div className="auth-quick-creds">
-          <div className="quick-creds-title">Demo Operator Credentials</div>
-          <div className="quick-creds-grid">
-            <button
-              type="button"
-              className="quick-cred-chip"
-              disabled={isLocked}
-              onClick={() => handleFillCredentials("admin", "admin123")}
-            >
-              <span className="cred-role">Administrator</span>
-              <code className="cred-details">admin / admin123</code>
-            </button>
-            <button
-              type="button"
-              className="quick-cred-chip"
-              disabled={isLocked}
-              onClick={() => handleFillCredentials("operator", "operator123")}
-            >
-              <span className="cred-role">SRE Operator</span>
-              <code className="cred-details">operator / operator123</code>
-            </button>
-          </div>
-        </div>
 
         {/* Footer Policy Notes */}
         <div className="auth-footer-note">
